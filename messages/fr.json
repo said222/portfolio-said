@@ -1,0 +1,79 @@
+{
+  "nav": {
+    "home": "Accueil",
+    "about": "À propos",
+    "skills": "Compétences",
+    "projects": "Projets",
+    "contact": "Contact",
+    "portfolio": "Portfolio"
+  },
+  "hero": {
+    "greeting": "Bonjour, je suis",
+    "name": "SAID AAZRI",
+    "title": "Développeur Full Stack & Designer UI/UX",
+    "description": "Je crée de belles applications web responsives avec des technologies modernes. Passionné par le code propre, l'expérience utilisateur et les solutions innovantes.",
+    "viewWork": "Voir Mon Travail",
+    "downloadCV": "Télécharger CV"
+  },
+  "about": {
+    "title": "À",
+    "titleHighlight": "Propos",
+    "description": "Je suis un développeur full-stack passionné avec plus de 5 ans d'expérience dans la création d'expériences numériques qui font la différence. J'aime transformer des problèmes complexes en solutions simples, belles et intuitives.",
+    "features": {
+      "cleanCode": {
+        "title": "Code Propre",
+        "description": "Écriture de code maintenable, évolutif et efficace en suivant les meilleures pratiques."
+      },
+      "creativeDesign": {
+        "title": "Design Créatif",
+        "description": "Création d'interfaces utilisateur belles et intuitives avec attention aux détails."
+      },
+      "performance": {
+        "title": "Performance",
+        "description": "Optimisation des applications pour la vitesse, l'accessibilité et l'expérience utilisateur."
+      }
+    }
+  },
+  "skills": {
+    "title": "Mes",
+    "titleHighlight": "Compétences",
+    "description": "Voici les technologies et outils avec lesquels je travaille pour donner vie aux idées.",
+    "categories": {
+      "frontend": "Frontend",
+      "backend": "Backend",
+      "tools": "Outils & Autres"
+    }
+  },
+  "projects": {
+    "title": "Projets",
+    "titleHighlight": "Sélectionnés",
+    "description": "Voici quelques-uns de mes projets récents qui mettent en valeur mes compétences et mon expérience.",
+    "viewProject": "Voir le Projet",
+    "sourceCode": "Code Source"
+  },
+  "contact": {
+    "title": "Entrer en",
+    "titleHighlight": "Contact",
+    "description": "Je suis toujours ouvert à discuter de nouvelles opportunités et de projets intéressants.",
+    "form": {
+      "name": "Votre Nom",
+      "email": "Votre Email",
+      "message": "Votre Message",
+      "send": "Envoyer le Message",
+      "sending": "Envoi en cours...",
+      "success": "Message envoyé avec succès !",
+      "error": "Échec de l'envoi du message. Veuillez réessayer."
+    },
+    "info": {
+      "email": "Email",
+      "phone": "Téléphone",
+      "location": "Localisation"
+    }
+  },
+  "footer": {
+    "description": "Développeur Full Stack passionné par la création d'expériences numériques extraordinaires.",
+    "quickLinks": "Liens Rapides",
+    "followMe": "Me Suivre",
+    "rights": "Tous droits réservés."
+  }
+}
