@@ -79,14 +79,23 @@ export async function POST(request: NextRequest) {
 
     // Check if API key is configured
     if (!process.env.RESEND_API_KEY) {
+      console.error('RESEND_API_KEY not found in environment variables')
       return NextResponse.json(
-        { error: 'Email service not configured' },
+        { error: 'Email service not configured - missing API key' },
         { status: 500 }
       )
     }
 
+    // Log configuration for debugging (remove sensitive info in production)
+    console.log('Email configuration:', {
+      hasApiKey: !!process.env.RESEND_API_KEY,
+      apiKeyPrefix: process.env.RESEND_API_KEY?.substring(0, 10) + '...',
+      fromEmail: process.env.RESEND_FROM_EMAIL || 'Portfolio <onboarding@resend.dev>',
+      toEmail: process.env.RESEND_TO_EMAIL || 'contact@said-aazri.com'
+    })
+
     // Send email using Resend
-    const { data, error } = await resend.emails.send({
+    const emailPayload = {
       from: process.env.RESEND_FROM_EMAIL || 'Portfolio <onboarding@resend.dev>',
       to: [process.env.RESEND_TO_EMAIL || 'contact@said-aazri.com'],
       replyTo: email,
@@ -123,14 +132,45 @@ export async function POST(request: NextRequest) {
           </div>
         </div>
       `,
+    }
+
+    console.log('Sending email with payload:', {
+      from: emailPayload.from,
+      to: emailPayload.to,
+      subject: emailPayload.subject
     })
 
+    const { data, error } = await resend.emails.send(emailPayload)
+
     if (error) {
-      console.error('Resend API error:', error)
-      return NextResponse.json(
-        { error: 'Failed to send email. Please try again later.' },
-        { status: 500 }
-      )
+      console.error('Resend API error details:', {
+        error,
+        message: error.message,
+        name: error.name
+      })
+      
+      // Provide more specific error messages based on Resend error types
+      if (error.message?.includes('API key')) {
+        return NextResponse.json(
+          { error: 'Invalid email service API key. Please check configuration.' },
+          { status: 500 }
+        )
+      } else if (error.message?.includes('domain')) {
+        return NextResponse.json(
+          { error: 'Email domain not verified. Please verify your domain with Resend.' },
+          { status: 500 }
+        )
+      } else if (error.message?.includes('rate limit')) {
+        return NextResponse.json(
+          { error: 'Rate limit exceeded. Please try again later.' },
+          { status: 429 }
+        )
+      } else {
+        return NextResponse.json(
+          { error: `Email service error: ${error.message || 'Unknown error'}` },
+          { status: 500 }
+        )
+      }
     }
 
     console.log('Email sent successfully:', data?.id)
