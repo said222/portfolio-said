@@ -1,13 +1,42 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { Resend } from 'resend'
+
+const resend = new Resend(process.env.RESEND_API_KEY)
 
 export async function POST(request: NextRequest) {
   try {
-    const { name, email, message } = await request.json()
+    const { name, email, message, recaptchaToken } = await request.json()
 
     // Validate required fields
     if (!name || !email || !message) {
       return NextResponse.json(
         { error: 'All fields are required' },
+        { status: 400 }
+      )
+    }
+
+    // Validate reCAPTCHA token
+    if (!recaptchaToken) {
+      return NextResponse.json(
+        { error: 'reCAPTCHA verification required' },
+        { status: 400 }
+      )
+    }
+
+    // Verify reCAPTCHA token with Google
+    const recaptchaResponse = await fetch('https://www.google.com/recaptcha/api/siteverify', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: `secret=${process.env.RECAPTCHA_SECRET_KEY}&response=${recaptchaToken}`,
+    })
+
+    const recaptchaData = await recaptchaResponse.json()
+
+    if (!recaptchaData.success) {
+      return NextResponse.json(
+        { error: 'reCAPTCHA verification failed. Please try again.' },
         { status: 400 }
       )
     }
@@ -22,29 +51,20 @@ export async function POST(request: NextRequest) {
     }
 
     // Check if API key is configured
-    if (!process.env.BREVO_API_KEY) {
+    if (!process.env.RESEND_API_KEY) {
       return NextResponse.json(
         { error: 'Email service not configured' },
         { status: 500 }
       )
     }
 
-    // Create email payload for Brevo API
-    const emailPayload = {
-      sender: {
-        name: process.env.BREVO_SENDER_NAME || 'Portfolio Contact',
-        email: process.env.BREVO_SENDER_EMAIL
-      },
-      to: [{
-        email: process.env.BREVO_RECIPIENT_EMAIL,
-        name: process.env.BREVO_SENDER_NAME || 'Portfolio Owner'
-      }],
-      replyTo: {
-        email: email,
-        name: name
-      },
+    // Send email using Resend
+    const { data, error } = await resend.emails.send({
+      from: process.env.RESEND_FROM_EMAIL || 'Portfolio <onboarding@resend.dev>',
+      to: [process.env.RESEND_TO_EMAIL || 'contact@said-aazri.com'],
+      replyTo: email,
       subject: `New Contact Form Message from ${name}`,
-      htmlContent: `
+      html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
           <div style="background: linear-gradient(135deg, #3b82f6, #8b5cf6); padding: 30px; text-align: center;">
             <h1 style="color: white; margin: 0; font-size: 24px;">New Contact Form Message</h1>
@@ -75,50 +95,24 @@ export async function POST(request: NextRequest) {
             <p>Sent on ${new Date().toLocaleString()}</p>
           </div>
         </div>
-      `
-    }
-
-    // Send email using Brevo REST API
-    const response = await fetch('https://api.brevo.com/v3/smtp/email', {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'api-key': process.env.BREVO_API_KEY
-      },
-      body: JSON.stringify(emailPayload)
+      `,
     })
 
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}))
-      console.error('Brevo API error:', response.status, errorData)
-      
-      if (response.status === 401) {
-        return NextResponse.json(
-          { error: 'Email service authentication failed. Please check your API key.' },
-          { status: 500 }
-        )
-      } else if (response.status === 400) {
-        return NextResponse.json(
-          { error: 'Invalid email data. Please check your configuration.' },
-          { status: 500 }
-        )
-      }
-      
+    if (error) {
+      console.error('Resend API error:', error)
       return NextResponse.json(
         { error: 'Failed to send email. Please try again later.' },
         { status: 500 }
       )
     }
 
-    const result = await response.json()
-    console.log('Email sent successfully:', result.messageId)
+    console.log('Email sent successfully:', data?.id)
     
     return NextResponse.json(
       { 
         success: true, 
         message: 'Message sent successfully! I\'ll get back to you soon.',
-        messageId: result.messageId
+        messageId: data?.id
       },
       { status: 200 }
     )

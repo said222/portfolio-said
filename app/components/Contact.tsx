@@ -6,6 +6,7 @@ import { useRef, useState } from 'react'
 import { Mail, Phone, MapPin, Send, Loader2 } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { useTranslations } from 'next-intl'
+import ReCAPTCHA from 'react-google-recaptcha'
 
 const Contact = () => {
   const ref = useRef(null)
@@ -17,9 +18,17 @@ const Contact = () => {
     message: ''
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [recaptchaToken, setRecaptchaToken] = useState<string | null>(null)
+  const recaptchaRef = useRef<ReCAPTCHA>(null)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+
+    if (!recaptchaToken) {
+      toast.error('Please complete the reCAPTCHA verification.')
+      return
+    }
+
     setIsSubmitting(true)
 
     try {
@@ -28,7 +37,10 @@ const Contact = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          ...formData,
+          recaptchaToken
+        }),
       })
 
       const data = await response.json()
@@ -36,6 +48,8 @@ const Contact = () => {
       if (response.ok) {
         toast.success(data.message || 'Message sent successfully! 🎉')
         setFormData({ name: '', email: '', message: '' })
+        setRecaptchaToken(null)
+        recaptchaRef.current?.reset()
       } else {
         toast.error(data.error || 'Failed to send message. Please try again.')
       }
@@ -43,8 +57,12 @@ const Contact = () => {
       console.error('Error sending message:', error)
       toast.error('Network error. Please check your connection and try again.')
     } finally {
-      setIsSubmitting(false) 
+      setIsSubmitting(false)
     }
+  }
+
+  const handleRecaptchaChange = (token: string | null) => {
+    setRecaptchaToken(token)
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -65,7 +83,7 @@ const Contact = () => {
       icon: Phone,
       title: t('info.phone'),
       value: '07 71 95 66 48',
-      href: 'tel:+33771956648'
+      href: 'tel:+212771956648'
     },
     {
       icon: MapPin,
@@ -185,16 +203,25 @@ const Contact = () => {
                 />
               </div>
 
+              {/* reCAPTCHA */}
+              <div className="flex justify-center">
+                <ReCAPTCHA
+                  ref={recaptchaRef}
+                  sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY!}
+                  onChange={handleRecaptchaChange}
+                  theme="light"
+                />
+              </div>
+
               <motion.button
                 type="submit"
                 disabled={isSubmitting}
                 whileHover={!isSubmitting ? { scale: 1.05 } : {}}
                 whileTap={!isSubmitting ? { scale: 0.95 } : {}}
-                className={`w-full py-3 px-6 rounded-lg font-medium flex items-center justify-center space-x-2 transition-colors ${
-                  isSubmitting
-                    ? 'bg-gray-400 cursor-not-allowed'
-                    : 'bg-primary-500 hover:bg-primary-600'
-                } text-white`}
+                className={`w-full py-3 px-6 rounded-lg font-medium flex items-center justify-center space-x-2 transition-colors ${isSubmitting
+                  ? 'bg-gray-400 cursor-not-allowed'
+                  : 'bg-primary-500 hover:bg-primary-600'
+                  } text-white`}
               >
                 {isSubmitting ? (
                   <>

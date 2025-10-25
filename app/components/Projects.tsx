@@ -13,20 +13,20 @@ const Projects = () => {
 
   const projects = [
     {
-      title: 'E-Commerce Platform',
-      description: 'A full-stack e-commerce solution with React, Node.js, and Stripe integration. Features include user authentication, product management, and secure payments.',
-      image: '🛒',
-      tech: ['React', 'Node.js', 'MongoDB', 'Stripe'],
+      title: 'BIOCIDIS Pharma',
+      description: 'Solutions multiples pour les professionnels de la santé. A comprehensive healthcare platform built with modern web technologies for medical professionals.',
+      image: '🏥',
+      tech: ['PHP', 'WordPress', 'Elementor'],
       github: '#',
-      live: '#'
+      live: 'https://biocidis.ma'
     },
     {
-      title: 'Task Management App',
-      description: 'A collaborative task management application with real-time updates, drag-and-drop functionality, and team collaboration features.',
-      image: '📋',
-      tech: ['Next.js', 'TypeScript', 'Prisma', 'Socket.io'],
+      title: 'Sleepy Maroc',
+      description: 'A modern web platform built with cutting-edge technologies. Features responsive design and optimized user experience.',
+      image: '🌙',
+      tech: ['PHP', 'WordPress', 'Elementor'],
       github: '#',
-      live: '#'
+      live: 'https://sleepymaroc.com/'
     },
     {
       title: 'Weather Dashboard',

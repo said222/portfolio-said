@@ -211,6 +211,5 @@ zelio-nextjs.vercel.app/
 **/*key*
 **/*password*
 
-# Brevo/Email service backups
-brevo-backup/
+# Email service backups
 email-templates/

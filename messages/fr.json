@@ -10,7 +10,7 @@
   "hero": {
     "greeting": "Bonjour, je suis",
     "name": "SAID AAZRI",
-    "title": "Développeur Full Stack & Designer UI/UX",
+    "title": "Développeur Full Stack Web",
     "description": "Je crée de belles applications web responsives avec des technologies modernes. Passionné par le code propre, l'expérience utilisateur et les solutions innovantes.",
     "viewWork": "Voir Mon Travail",
     "downloadCV": "Télécharger CV"
@@ -41,6 +41,7 @@
     "categories": {
       "frontend": "Frontend",
       "backend": "Backend",
+      "cms": "CMS",
       "tools": "Outils & Autres"
     }
   },
@@ -71,7 +72,7 @@
     }
   },
   "footer": {
-    "description": "Développeur Full Stack passionné par la création d'expériences numériques extraordinaires.",
+    "description": "Développeur Full Stack Web passionné par la création d'expériences numériques extraordinaires.",
     "quickLinks": "Liens Rapides",
     "followMe": "Me Suivre",
     "rights": "Tous droits réservés."
