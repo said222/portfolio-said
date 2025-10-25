@@ -19,10 +19,12 @@ const Contact = () => {
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [recaptchaToken, setRecaptchaToken] = useState<string | null>(null)
+  const [recaptchaError, setRecaptchaError] = useState<string | null>(null)
   const recaptchaRef = useRef<ReCAPTCHA>(null)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    setRecaptchaError(null)
 
     if (!recaptchaToken) {
       toast.error('Please complete the reCAPTCHA verification.')
@@ -51,7 +53,15 @@ const Contact = () => {
         setRecaptchaToken(null)
         recaptchaRef.current?.reset()
       } else {
-        toast.error(data.error || 'Failed to send message. Please try again.')
+        // Handle reCAPTCHA specific errors
+        if (data.error?.includes('reCAPTCHA expired') || data.error?.includes('timeout-or-duplicate')) {
+          setRecaptchaError('reCAPTCHA has expired. Please verify again.')
+          setRecaptchaToken(null)
+          recaptchaRef.current?.reset()
+          toast.error('reCAPTCHA expired. Please complete the verification again.')
+        } else {
+          toast.error(data.error || 'Failed to send message. Please try again.')
+        }
       }
     } catch (error) {
       console.error('Error sending message:', error)
@@ -63,6 +73,19 @@ const Contact = () => {
 
   const handleRecaptchaChange = (token: string | null) => {
     setRecaptchaToken(token)
+    setRecaptchaError(null) // Clear any previous errors
+  }
+
+  const handleRecaptchaExpired = () => {
+    setRecaptchaToken(null)
+    setRecaptchaError('reCAPTCHA has expired. Please verify again.')
+    toast.error('reCAPTCHA expired. Please complete the verification again.')
+  }
+
+  const handleRecaptchaError = () => {
+    setRecaptchaToken(null)
+    setRecaptchaError('reCAPTCHA error occurred. Please try again.')
+    toast.error('reCAPTCHA error. Please try again.')
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -204,14 +227,23 @@ const Contact = () => {
               </div>
 
               {/* reCAPTCHA */}
-              <div className="flex justify-center">
+              <div className="flex flex-col items-center space-y-2">
                 {process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY ? (
-                  <ReCAPTCHA
-                    ref={recaptchaRef}
-                    sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}
-                    onChange={handleRecaptchaChange}
-                    theme="light"
-                  />
+                  <>
+                    <ReCAPTCHA
+                      ref={recaptchaRef}
+                      sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}
+                      onChange={handleRecaptchaChange}
+                      onExpired={handleRecaptchaExpired}
+                      onError={handleRecaptchaError}
+                      theme="light"
+                    />
+                    {recaptchaError && (
+                      <div className="text-red-500 text-sm text-center">
+                        {recaptchaError}
+                      </div>
+                    )}
+                  </>
                 ) : (
                   <div className="text-red-500 text-sm">
                     reCAPTCHA not configured. Please add NEXT_PUBLIC_RECAPTCHA_SITE_KEY to your environment variables.
