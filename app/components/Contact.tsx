@@ -205,12 +205,18 @@ const Contact = () => {
 
               {/* reCAPTCHA */}
               <div className="flex justify-center">
-                <ReCAPTCHA
-                  ref={recaptchaRef}
-                  sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY!}
-                  onChange={handleRecaptchaChange}
-                  theme="light"
-                />
+                {process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY ? (
+                  <ReCAPTCHA
+                    ref={recaptchaRef}
+                    sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}
+                    onChange={handleRecaptchaChange}
+                    theme="light"
+                  />
+                ) : (
+                  <div className="text-red-500 text-sm">
+                    reCAPTCHA not configured. Please add NEXT_PUBLIC_RECAPTCHA_SITE_KEY to your environment variables.
+                  </div>
+                )}
               </div>
 
               <motion.button

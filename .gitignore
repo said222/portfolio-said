@@ -214,3 +214,7 @@ zelio-nextjs.vercel.app/
 
 # Email service backups
 email-templates/
+
+# Documentation and markdown files
+*.md
+!README.md

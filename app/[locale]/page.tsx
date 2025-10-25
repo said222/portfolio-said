@@ -11,14 +11,36 @@ import Footer from '../components/Footer'
 
 export default function Home() {
   return (
-    <main className="min-h-screen">
-      <Navbar />
-      <Hero />
-      <About />
-      <Skills />
-      <Projects />
-      <Contact />
-      <Footer />
-    </main>
+    <>
+      <header>
+        <Navbar />
+      </header>
+      
+      <main className="min-h-screen">
+        <section id="hero" aria-label="Hero section">
+          <Hero />
+        </section>
+        
+        <section id="about" aria-label="About section">
+          <About />
+        </section>
+        
+        <section id="skills" aria-label="Skills section">
+          <Skills />
+        </section>
+        
+        <section id="projects" aria-label="Projects section">
+          <Projects />
+        </section>
+        
+        <section id="contact" aria-label="Contact section">
+          <Contact />
+        </section>
+      </main>
+      
+      <footer>
+        <Footer />
+      </footer>
+    </>
   )
 }

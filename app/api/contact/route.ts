@@ -23,6 +23,14 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    // Check if reCAPTCHA secret key is configured
+    if (!process.env.RECAPTCHA_SECRET_KEY) {
+      return NextResponse.json(
+        { error: 'reCAPTCHA service not configured' },
+        { status: 500 }
+      )
+    }
+
     // Verify reCAPTCHA token with Google
     const recaptchaResponse = await fetch('https://www.google.com/recaptcha/api/siteverify', {
       method: 'POST',
@@ -33,12 +41,31 @@ export async function POST(request: NextRequest) {
     })
 
     const recaptchaData = await recaptchaResponse.json()
+    
+    // Log reCAPTCHA response for debugging (remove in production)
+    console.log('reCAPTCHA verification response:', recaptchaData)
 
     if (!recaptchaData.success) {
-      return NextResponse.json(
-        { error: 'reCAPTCHA verification failed. Please try again.' },
-        { status: 400 }
-      )
+      const errorCodes = recaptchaData['error-codes'] || []
+      console.error('reCAPTCHA verification failed:', errorCodes)
+      
+      // Provide more specific error messages
+      if (errorCodes.includes('invalid-input-secret')) {
+        return NextResponse.json(
+          { error: 'reCAPTCHA configuration error. Please contact support.' },
+          { status: 500 }
+        )
+      } else if (errorCodes.includes('timeout-or-duplicate')) {
+        return NextResponse.json(
+          { error: 'reCAPTCHA expired. Please try again.' },
+          { status: 400 }
+        )
+      } else {
+        return NextResponse.json(
+          { error: 'reCAPTCHA verification failed. Please try again.' },
+          { status: 400 }
+        )
+      }
     }
 
     // Validate email format
