@@ -41,6 +41,7 @@ next-env.d.ts
 
 # IDE and Editor files
 .vscode/
+.kiro
 .idea/
 *.swp
 *.swo
