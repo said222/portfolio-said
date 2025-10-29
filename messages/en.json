@@ -71,6 +71,28 @@
       "location": "Location"
     }
   },
+  "tools": {
+    "title": "Tools",
+    "github": "GitHub",
+    "linkedin": "LinkedIn",
+    "email": "Email",
+    "resume": "Resume",
+    "portfolio": "Portfolio",
+    "skills": "Skills",
+    "textFormatter": "Text Formatter"
+  },
+  "textFormatter": {
+    "title": "Text Formatter",
+    "description": "Transform your text into different cases with a single click",
+    "inputLabel": "Enter your text:",
+    "outputLabel": "Formatted text:",
+    "chooseFormat": "Choose a format:",
+    "copyToClipboard": "Copy to Clipboard",
+    "downloadText": "Download Text",
+    "clear": "Clear",
+    "examples": "Examples",
+    "backToHome": "Back to Home"
+  },
   "footer": {
     "description": "Full Stack Web Developer passionate about creating amazing digital experiences.",
     "quickLinks": "Quick Links",

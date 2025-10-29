@@ -8,6 +8,7 @@ import Skills from '../components/Skills'
 import Projects from '../components/Projects'
 import Contact from '../components/Contact'
 import Footer from '../components/Footer'
+import ToolsSidebar from '../components/ToolsSidebar'
 
 export default function Home() {
   return (
@@ -41,6 +42,9 @@ export default function Home() {
       <footer>
         <Footer />
       </footer>
+      
+      {/* Tools Sidebar */}
+      <ToolsSidebar />
     </>
   )
 }

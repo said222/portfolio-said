@@ -71,6 +71,28 @@
       "location": "Localisation"
     }
   },
+  "tools": {
+    "title": "Outils",
+    "github": "GitHub",
+    "linkedin": "LinkedIn",
+    "email": "Email",
+    "resume": "CV",
+    "portfolio": "Portfolio",
+    "skills": "Compétences",
+    "textFormatter": "Formateur de Texte"
+  },
+  "textFormatter": {
+    "title": "Formateur de Texte",
+    "description": "Transformez votre texte en différents formats d'un simple clic",
+    "inputLabel": "Entrez votre texte :",
+    "outputLabel": "Texte formaté :",
+    "chooseFormat": "Choisissez un format :",
+    "copyToClipboard": "Copier dans le Presse-papiers",
+    "downloadText": "Télécharger le Texte",
+    "clear": "Effacer",
+    "examples": "Exemples",
+    "backToHome": "Retour à l'Accueil"
+  },
   "footer": {
     "description": "Développeur Full Stack Web passionné par la création d'expériences numériques extraordinaires.",
     "quickLinks": "Liens Rapides",
