@@ -41,14 +41,14 @@ export async function POST(request: NextRequest) {
     })
 
     const recaptchaData = await recaptchaResponse.json()
-    
+
     // Log reCAPTCHA response for debugging (remove in production)
     console.log('reCAPTCHA verification response:', recaptchaData)
 
     if (!recaptchaData.success) {
       const errorCodes = recaptchaData['error-codes'] || []
       console.error('reCAPTCHA verification failed:', errorCodes)
-      
+
       // Provide more specific error messages
       if (errorCodes.includes('invalid-input-secret')) {
         return NextResponse.json(
@@ -94,10 +94,13 @@ export async function POST(request: NextRequest) {
       toEmail: process.env.RESEND_TO_EMAIL || 'contact@said-aazri.com'
     })
 
-    // Send email using Resend
+    // Send email using Resend with proper format
+    const fromEmail = process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev'
+    const toEmail = process.env.RESEND_TO_EMAIL || 'contact@said-aazri.com'
+
     const emailPayload = {
-      from: process.env.RESEND_FROM_EMAIL || 'Portfolio <onboarding@resend.dev>',
-      to: [process.env.RESEND_TO_EMAIL || 'contact@said-aazri.com'],
+      from: fromEmail,
+      to: [toEmail],
       replyTo: email,
       subject: `New Contact Form Message from ${name}`,
       html: `
@@ -141,14 +144,14 @@ export async function POST(request: NextRequest) {
     })
 
     const { data, error } = await resend.emails.send(emailPayload)
-
+console.log('error.message:', error?.message)
     if (error) {
       console.error('Resend API error details:', {
         error,
         message: error.message,
         name: error.name
       })
-      
+
       // Provide more specific error messages based on Resend error types
       if (error.message?.includes('API key')) {
         return NextResponse.json(
@@ -174,10 +177,10 @@ export async function POST(request: NextRequest) {
     }
 
     console.log('Email sent successfully:', data?.id)
-    
+
     return NextResponse.json(
-      { 
-        success: true, 
+      {
+        success: true,
         message: 'Message sent successfully! I\'ll get back to you soon.',
         messageId: data?.id
       },
@@ -186,7 +189,7 @@ export async function POST(request: NextRequest) {
 
   } catch (error: any) {
     console.error('Error sending email:', error)
-    
+
     return NextResponse.json(
       { error: 'Failed to send message. Please try again later.' },
       { status: 500 }

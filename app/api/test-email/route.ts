@@ -24,7 +24,7 @@ export async function GET() {
 
     // Test email configuration
     const testEmail = {
-      from: fromEmail || 'Portfolio <onboarding@resend.dev>',
+      from: fromEmail || 'onboarding@resend.dev',
       to: [toEmail || 'contact@said-aazri.com'],
       subject: 'Test Email - Portfolio Contact Form',
       html: `
